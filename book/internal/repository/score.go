@@ -62,3 +62,18 @@ func (b *BookRepository) GetDisticScore(ctx context.Context, bookId int64) (Dist
 	}
 	return score, nil
 }
+
+func (b *BookRepository) GetBookScoreByUserId(ctx context.Context, userId int64, bookId int64) (int64, error) {
+
+	query := `
+		select score from book_scores where user_id = $1 and book_id = $2;
+	`
+
+	var score int64
+	if err := b.DB.QueryRowContext(ctx, query, userId, bookId).Scan(&score); err == sql.ErrNoRows {
+		return 0, nil
+	} else if err != nil {
+		return 0, err
+	}
+	return score, nil
+}

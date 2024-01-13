@@ -8,6 +8,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// todo: read secret key from config. it should be same as secret key in user service
 const SECRETKEY = "sdfihsiudf89yfisuhf784yt7gsujfgweu7t89hgfuasf74ggh"
 
 func JWTMiddleware(next echo.HandlerFunc) echo.HandlerFunc {

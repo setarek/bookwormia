@@ -14,7 +14,8 @@ const (
 	defaultPageNumber = 0
 	defaultPageSize   = 3
 
-	baseUrl = "localhost:8080"
+	// todo : read base url from confi
+	baseUrl = "localhost:8000"
 )
 
 func (h BookHandler) GetList(ctx echo.Context) error {

@@ -12,4 +12,5 @@ var (
 
 	ErrorUnauthorizeUser = errors.New("unauthorized user")
 	ErrorInvalidEmail    = errors.New("invalid email")
+	ErrorScoreEmail      = errors.New("invalid score, it must be between one and five")
 )

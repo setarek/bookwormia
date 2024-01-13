@@ -17,7 +17,9 @@ type IBook interface {
 
 	UpsertScore(ctx context.Context, userId int64, bookId int64, score int64) error
 	UpsertComment(ctx context.Context, userId int64, bookId int64, comment string) error
+	GetBookCommentByUserId(ctx context.Context, userId int64, bookId int64) (string, error)
 
 	BookMark(ctx context.Context, bookId int64, userId int64, marked bool) error
 	GetDisticScore(ctx context.Context, bookId int64) (DistictScore, error)
+	GetBookScoreByUserId(ctx context.Context, userId int64, bookId int64) (int64, error)
 }

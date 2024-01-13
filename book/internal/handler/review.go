@@ -37,6 +37,15 @@ func (h BookHandler) AddReview(ctx echo.Context) error {
 	}
 
 	if request.Comment != "" {
+
+		comment, err := h.Repository.GetBookCommentByUserId(ctx.Request().Context(), userId, request.BookId)
+		if err != nil {
+			logger.Logger.Error().Err(err).Msg("error while getting user has any comment in this book")
+			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: rsErr.ServerErr.Error(),
+			})
+		}
+
 		if err := h.Repository.UpsertComment(ctx.Request().Context(), int64(userId), request.BookId, request.Comment); err != nil {
 			logger.Logger.Error().Err(err).Msg("error while add new comment to database")
 			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
@@ -44,17 +53,36 @@ func (h BookHandler) AddReview(ctx echo.Context) error {
 			})
 		}
 
-		// todo: instead of add comment count to redis directly, queue it then consume in worker to add to redis
-		if err := h.Cache.AddNewComment(request.BookId); err != nil {
-			logger.Logger.Error().Err(err).Msg("error while add new score to cache")
-			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: rsErr.ServerErr.Error(),
-			})
+		// todo: instead of check postgres that user wrote a comment for this book
+		// and add comment count to redis directly, queue it then consume in worker to add to redis
+
+		if comment == "" && err == nil {
+			if err := h.Cache.AddNewComment(request.BookId); err != nil {
+				logger.Logger.Error().Err(err).Msg("error while add new score to cache")
+				return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
+					Message: rsErr.ServerErr.Error(),
+				})
+			}
 		}
 
 	}
 
 	if request.Score != 0 {
+		if request.Score < 1 || request.Score > 5 {
+			logger.Logger.Error().Msg("invalid score. it must be between one and five")
+			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: rsErr.ErrorScoreEmail.Error(),
+			})
+		}
+
+		score, err := h.Repository.GetBookScoreByUserId(ctx.Request().Context(), userId, request.BookId)
+		if err != nil {
+			logger.Logger.Error().Err(err).Msg("error while getting user has any score in this book")
+			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
+				Message: rsErr.ServerErr.Error(),
+			})
+		}
+
 		if err := h.Repository.UpsertScore(ctx.Request().Context(), int64(userId), request.BookId, request.Score); err != nil {
 			logger.Logger.Error().Err(err).Msg("error while add new score to database")
 			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
@@ -62,12 +90,16 @@ func (h BookHandler) AddReview(ctx echo.Context) error {
 			})
 		}
 
-		// todo: instead of add score to redis directly, queue it then consume in worker to add to redis
-		if err := h.Cache.AddNewScore(request.BookId); err != nil {
-			logger.Logger.Error().Err(err).Msg("error while add new score to cache")
-			return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
-				Message: rsErr.ServerErr.Error(),
-			})
+		// todo: instead of check postgres at line 75that user scored this book before and
+		//add score to redis directly, queue it then consume in worker to add to redis
+
+		if score == 0 {
+			if err := h.Cache.AddNewScore(request.BookId); err != nil {
+				logger.Logger.Error().Err(err).Msg("error while add new score to cache")
+				return ctx.JSON(http.StatusInternalServerError, ErrorResponse{
+					Message: rsErr.ServerErr.Error(),
+				})
+			}
 		}
 	}
 
@@ -79,7 +111,7 @@ func (h BookHandler) AddReview(ctx echo.Context) error {
 		})
 	}
 
-	return ctx.JSON(http.StatusAccepted, Respone{
+	return ctx.JSON(http.StatusOK, Respone{
 		Success: true,
 	})
 
