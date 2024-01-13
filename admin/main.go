@@ -10,10 +10,6 @@ const (
 )
 
 func main() {
-
-	// currentPath, _ := os.Getwd()
-	// init config
-
 	if err := cmd.RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

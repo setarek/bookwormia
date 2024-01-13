@@ -18,12 +18,11 @@ const (
 
 func main() {
 
-	// currentPath, err := os.Getwd()
-	// if err != nil {
-	// 	logger.Logger.Error().Err(err).Msg("error while getting current path")
-	// 	os.Exit(1)
-	// }
-	currentPath := "/home/setareh/projects/go/src/github.com/setarek/bookwormia"
+	currentPath, err := os.Getwd()
+	if err != nil {
+		logger.Logger.Error().Err(err).Msg("error while getting current path")
+		os.Exit(1)
+	}
 
 	conf, err := config.InitConfig(APP_NAME, currentPath, "config")
 	if err != nil {
