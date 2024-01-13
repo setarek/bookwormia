@@ -1,0 +1,51 @@
+version: '3'
+services:
+    redis:
+      image: redis:alpine
+      ports:
+        - 6378:6379
+      container_name: redis
+      volumes:
+        - redis-data:/data
+    redis-cli:
+      image: redis:alpine
+
+    postgres:
+      image: postgres:latest
+      container_name: postgres
+      ports:
+        - 5431:5432
+      environment:
+        DB_PASSWORD: test
+        DB_DATABASE: test
+      volumes:
+        - postgres-data:/var/lib/postgresql/data
+    book:
+      build: 
+        context: .
+        args: 
+          PROJECT_NAME: "book"
+      env_file:
+          - book/.env
+      ports:
+        - 8000:8000
+      depends_on:
+        - redis
+        - postgres
+    user:
+      build: 
+        context: .
+        args: 
+          PROJECT_NAME: "user"
+      env_file:
+          - user/.env
+      depends_on:
+        - redis
+        - postgres
+ 
+volumes:
+  postgres-data:
+  redis-data:
+
+
+    
