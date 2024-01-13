@@ -11,4 +11,5 @@ var (
 	ErrorEmptyQuery = errors.New("empty query")
 
 	ErrorUnauthorizeUser = errors.New("unauthorized user")
+	ErrorInvalidEmail    = errors.New("invalid email")
 )

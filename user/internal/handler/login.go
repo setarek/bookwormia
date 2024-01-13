@@ -25,7 +25,12 @@ func (u *UserHandler) Login(ctx echo.Context) error {
 		})
 	}
 
-	// todo: check email is valid
+	if !utils.ValidateEmail(request.Email) {
+		logger.Logger.Warn().Msg("invalid email")
+		return ctx.JSON(http.StatusBadRequest, ErrorResponse{
+			Message: rsErr.ErrorInvalidEmail.Error(),
+		})
+	}
 
 	userId, err := u.Repository.CreateOrGetUser(ctx.Request().Context(), request.Email, request.Password)
 	if err != nil {
