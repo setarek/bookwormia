@@ -25,8 +25,7 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	// currentPath, _ := os.Getwd()
-	currentPath := "/home/setareh/projects/go/src/github.com/setarek/bookwormia"
+	currentPath, _ := os.Getwd()
 	config, err := config.InitConfig("admin", currentPath, "config")
 	if err != nil {
 		logger.Logger.Error().Err(err).Msg("error while initializing config")

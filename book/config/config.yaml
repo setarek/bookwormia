@@ -5,7 +5,7 @@ DB_PORT: 5432
 DB_USER: test
 DB_PASSWORD: test
 DB_DATABASE: test
-DB_PATH:
+DB_PATH: book/internal/model/migrations
 REDIS_HOST: localhost
 REDIS_PORT: 6379
 REDIS_NUM: 0

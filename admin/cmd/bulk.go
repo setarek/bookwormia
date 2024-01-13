@@ -97,7 +97,7 @@ var editBooksCmd = &cobra.Command{
 			logger.Logger.Error().Err(err).Msg("error while getting new book")
 		}
 
-		logger.Logger.Info().Str("fileName", fileName).Msg("New books added!")
+		logger.Logger.Info().Str("fileName", fileName).Msg("New books edited!")
 	},
 }
 

@@ -5,5 +5,5 @@ DB_PORT: 5432
 DB_USER: test
 DB_PASSWORD: test
 DB_DATABASE: test
-DB_PATH: 
+DB_PATH: user/internal/model/migrations
 SECRET_KEY: sdfihsiudf89yfisuhf784yt7gsujfgweu7t89hgfuasf74ggh

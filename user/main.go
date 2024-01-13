@@ -10,6 +10,8 @@ import (
 	"context"
 	"fmt"
 	"os"
+
+	"github.com/spf13/viper"
 )
 
 const (
@@ -36,7 +38,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err := postgres.Migrate(context.Background(), conf.GetString("db_path"), db); err != nil {
+	if err := postgres.Migrate(context.Background(), fmt.Sprintf("%s/%s", currentPath, viper.GetString("db_path")), db); err != nil {
 		logger.Logger.Error().Err(err).Msg("error while migrating db")
 		os.Exit(1)
 	}

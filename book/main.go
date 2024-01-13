@@ -16,6 +16,8 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+
+	"github.com/spf13/viper"
 )
 
 const (
@@ -44,7 +46,7 @@ func main() {
 
 	redisClient := redis.GetRedisClient(conf)
 
-	if err := postgres.Migrate(context.Background(), conf.GetString("db_path"), db); err != nil {
+	if err := postgres.Migrate(context.Background(), fmt.Sprintf("%s/%s", currentPath, viper.GetString("db_path")), db); err != nil {
 		logger.Logger.Error().Err(err).Msg("error while migrating db")
 		os.Exit(1)
 	}
